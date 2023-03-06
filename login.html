@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <p class="error"></p>
+  <form class="login">
+
+
+    <h1>Login</h1>
+    <label>Email</label><br>
+    <input type="email" id="email">
+    <br><br>
+    <label for="password">Password</label><br>
+    <input type="password" id="password">
+    <br><br>
+
+    <input type="submit">
+
+
+  </form>
+
+  <script>
+
+    const currentUser = [];
+    currentUser[0] = "MAN";
+    let lform = document.querySelector('.login');
+    let error = document.querySelector('.error');
+
+    lform.addEventListener('submit', login)
+    let lemail = document.querySelector('#email');
+    let lpassword = document.querySelector('#password');
+    let data
+    function login(e) {
+      e.preventDefault();
+      data = JSON.parse(localStorage.getItem('data'));
+      let email = lemail.value;
+      let password = lpassword.value;
+      let test = ["EMAIL UNAVAILABLE", "PASSWORD NOT MATCH", "LOGIN SUCCESSFUL"]
+      let x = check(email, password)
+      if (x == 0 || x == 1) {
+        error.innerHTML = test[x]
+
+      }
+      else {
+        error.innerHTML = test[x]
+        let token = Token(); let id = currentUser.length++;
+        data.forEach((item) => {
+          if (item.email == email && item.password == password) {
+            let names = item.name;
+            let email = item.email;
+            let password = item.password;
+            let SK = {
+              name: `${names}`,
+              email: `${email}`,
+              password: `${password}`,
+              token: `${token}`
+            }
+            currentUser.push(SK);
+            lemail.value = "";
+            lpassword.value = "";
+            localStorage.setItem("data", JSON.stringify(currentUser))
+            window.location.href = "Dashboard.html";
+
+          }
+        })
+
+
+
+      }
+
+    }
+
+
+    function check(email, password) {
+      let flag = 0
+      for (let t of data) {
+        if (t.email == email) {
+          if (t.password == password) {
+            return 2;
+          }
+          else {
+            return 1
+          }
+          flag = 1
+        }
+      }
+      if (flag == 0) {
+        return 0
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+    function Token() {
+      let capital = "GHIJKLM"
+      let small = "fghi"
+      let number = "456789"
+      let special = "^&*()_+"
+
+      let char = capital + small + number + special
+
+      let token = ""
+      for (let J = 0; J < 16; J++) {
+        let random = Math.floor(Math.random() * char.length) // 4
+        token = token + char[random]
+      }
+      return token
+    }
+
+
+
+
+  </script>
+</body>
+
+</html>
